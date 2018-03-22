@@ -1,6 +1,6 @@
 {
   "name": "riojs",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Rio. Functional Programming Language that compiles to Javascript",
   "main": "index.js",
   "scripts": {
