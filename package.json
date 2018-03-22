@@ -1,0 +1,29 @@
+{
+  "name": "riojs",
+  "version": "0.0.1",
+  "description": "Rio. Functional Programming Language that compiles to Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-parser": "pegjs -o index.js grammar.pegjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/divsense/rio.git"
+  },
+  "keywords": [
+    "rio",
+    "funcional",
+    "programming",
+    "language"
+  ],
+  "author": "Oleg Kirichenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/divsense/rio/issues"
+  },
+  "homepage": "https://github.com/divsense/rio#readme",
+  "devDependencies": {
+    "pegjs": "^0.10.0"
+  }
+}
