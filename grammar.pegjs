@@ -1,3 +1,10 @@
+// Rio Grammar
+// ==================
+//
+// Generated parser builds a
+// syntax tree compatible with the ESTree spec [2].
+//
+
 {
     function optionalList(value) {
         return value !== null ? value : [];
@@ -67,7 +74,10 @@
                       type: "Property",
                       key: x,
                       value: x,
-                      kind: "init"
+                      kind: "init",
+                      method: false,
+                      shorthand: true,
+                      computed: false
                     }
                 });
     }
@@ -257,7 +267,7 @@ ExportStatement
       return {
         type: "ReturnStatement",
         argument: {
-            type: "ObjectExpression",
+            type: "ObjectPattern",
             properties: buildExportList(head, tail, 3)
         }
       };
@@ -551,6 +561,9 @@ PropertyNameAndValueList
 PropertyAssignment
   = key:PropertyName __ ":" __ value:SingleExpression {
       return { type: "Property", key: key, value: value, kind: "init" };
+    }
+  / key:Identifier {
+      return { type: "Property", key: key, value: key, kind: "init", shorthand: true, method: false, computed: false };
     }
 
 PropertyName
