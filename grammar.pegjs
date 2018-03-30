@@ -125,6 +125,7 @@ SourceElement
 
 Statement
   = Block
+  / FunctionDeclarationStatement
   / DeclarationStatement
   / EmptyStatement
   / ExpressionStatement
@@ -150,6 +151,18 @@ StatementList
 
 EmptyStatement
   = ";" { return { type: "EmptyStatement" }; }
+
+FunctionDeclarationStatement
+  = id:Identifier __ "=" __ params:ArrowFunctionParameters __ ArrowToken __ body:FunctionBody {
+      return {
+        type: "FunctionDeclaration",
+        id: id,
+        generator: false,
+        expression: false,
+        params: params,
+        body: body
+      };
+    }
 
 DeclarationStatement
   = __ declaration:Declaration EOS {
@@ -611,6 +624,23 @@ ArrowFunctionBody
                 body: optionalList(body)
             },
             isExpression: false
+        };
+    }
+
+FunctionBody
+    = argument:SingleExpression {
+      return {
+            type: "BlockStatement",
+            body: [{
+                type: "ReturnStatement",
+                argument: argument
+            }]
+        }
+    }
+    / '{' __ body:SourceElements? __ '}' {
+        return {
+            type: "BlockStatement",
+            body: optionalList(body)
         };
     }
 

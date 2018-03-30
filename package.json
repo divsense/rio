@@ -4,7 +4,8 @@
   "description": "Rio. Functional Programming Language that compiles to Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
+    "acorn": "acorn",
     "generate-parser": "pegjs -o index.js grammar.pegjs"
   },
   "repository": {
@@ -24,6 +25,11 @@
   },
   "homepage": "https://github.com/divsense/rio#readme",
   "devDependencies": {
+    "acorn": "^5.5.3",
+    "astring": "^1.2.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.0.5",
     "pegjs": "^0.10.0"
-  }
+  },
+  "dependencies": {}
 }
