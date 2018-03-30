@@ -325,7 +325,7 @@ function peg$parse(input, options) {
                 };
               },
       peg$c53 = function(head, tail) {
-              return !tail.length ? head : buildDotCompositionExpression(head, buildDotCall(extractPairs(tail, 1, 3))); 
+              return !tail.length ? head : buildDotCompositionExpression(head, buildDotCall(extractPairs(tail, 1, 3), location())); 
           },
       peg$c54 = function(head, tail) { 
               return !tail.length ? head : buildCompositionExpression(head, extractList(tail, 3), "composeP");
@@ -579,7 +579,8 @@ function peg$parse(input, options) {
       peg$c184 = function(head, tail) {
             return {
               type: "Identifier",
-              name: head + tail.join("")
+              name: head + tail.join(""),
+              loc: location()
             };
           },
       peg$c185 = "$",
@@ -9412,7 +9413,7 @@ function peg$parse(input, options) {
           return list.map(function(el) { return [ el[a], el[b] ]; });
       }
 
-      function buildDotCall(list) {
+      function buildDotCall(list, loc) {
           return list.reduce(function(m, e){ 
               m.push({
                   type: "CallExpression",
@@ -9422,7 +9423,8 @@ function peg$parse(input, options) {
                       computed: false,
                       property: {
                           type: "Identifier",
-                          name: e[0]
+                          name: e[0],
+                          loc: loc
                       },
                       object: { }
                   }
@@ -9480,7 +9482,8 @@ function peg$parse(input, options) {
               type: "CallExpression",
               callee: {
                 type: "Identifier",
-                name: method
+                name: method,
+                loc: location()
               },
               arguments: [head].concat(tail)
           };

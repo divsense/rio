@@ -26,7 +26,7 @@
         return list.map(function(el) { return [ el[a], el[b] ]; });
     }
 
-    function buildDotCall(list) {
+    function buildDotCall(list, loc) {
         return list.reduce(function(m, e){ 
             m.push({
                 type: "CallExpression",
@@ -36,7 +36,8 @@
                     computed: false,
                     property: {
                         type: "Identifier",
-                        name: e[0]
+                        name: e[0],
+                        loc: loc
                     },
                     object: { }
                 }
@@ -94,7 +95,8 @@
             type: "CallExpression",
             callee: {
               type: "Identifier",
-              name: method
+              name: method,
+              loc: location()
             },
             arguments: [head].concat(tail)
         };
@@ -345,7 +347,7 @@ DotCompositionExpression
   = head:PromiseCompositionExpression
     tail:(__ DotCompositionToken __ PromiseCompositionExpression)*
     {
-        return !tail.length ? head : buildDotCompositionExpression(head, buildDotCall(extractPairs(tail, 1, 3))); 
+        return !tail.length ? head : buildDotCompositionExpression(head, buildDotCall(extractPairs(tail, 1, 3), location())); 
     }
 
 PromiseCompositionExpression
@@ -735,7 +737,8 @@ IdentifierName "identifier"
   = head:IdentifierStart tail:IdentifierPart* {
       return {
         type: "Identifier",
-        name: head + tail.join("")
+        name: head + tail.join(""),
+        loc: location()
       };
     }
 
