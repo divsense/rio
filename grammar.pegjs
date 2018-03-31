@@ -1019,6 +1019,7 @@ TrueToken       = "true"       !IdentifierPart
 
 EllipsisToken   = "..."
 ArrowToken      = "->"
+JoinToken       = ">>*"
 BindToken       = ">>="
 ConcatToken     = "++"
 ApplyToken      = "<*>"
@@ -1033,6 +1034,7 @@ PromiseCompositionToken  = "<<>"
 DotCompositionToken
     = ConcatToken { return "concat" }
     / BindToken { return "chain" }
+    / JoinToken { return "join" }
     / ApplyToken { return "ap" }
     / AltToken { return "alt" }
     / ThenToken { return "then" }
