@@ -425,7 +425,7 @@ ShiftExpression
 
 ShiftOperator
   = $("<<"  !"=")
-  / $(">>"  !"=")
+  /*/ $(">>"  !"=")*/
 
 AdditiveExpression
   = head:MultiplicativeExpression
@@ -1019,7 +1019,7 @@ TrueToken       = "true"       !IdentifierPart
 
 EllipsisToken   = "..."
 ArrowToken      = "->"
-JoinToken       = ">>*"
+JoinToken       = ">>"
 BindToken       = ">>="
 ConcatToken     = "++"
 ApplyToken      = "<*>"
