@@ -27,7 +27,7 @@
     }
 
     function buildDotCall(list, loc) {
-        return list.reduce(function(m, e){ 
+        return list.reduce(function(m, e){
             m.push({
                 type: "CallExpression",
                 arguments: [ e[1] ],
@@ -42,7 +42,31 @@
                     object: { }
                 }
             });
-            return m; 
+            return m;
+        }, []);
+    }
+
+    function buildDotWrapCall(list, loc) {
+        return list.reduce(function(m, e){
+            m.push({
+                type: "CallExpression",
+                arguments: [{
+                        type: "ArrowFunctionExpression",
+                        params: [],
+                        body: e[1]
+                    }],
+                callee: {
+                    type: "MemberExpression",
+                    computed: false,
+                    property: {
+                        type: "Identifier",
+                        name: e[0],
+                        loc: loc
+                    },
+                    object: { }
+                }
+            });
+            return m;
         }, []);
     }
 
@@ -344,10 +368,17 @@ ConditionalExpression
     / DotCompositionExpression
 
 DotCompositionExpression
-  = head:PromiseCompositionExpression
-    tail:(__ DotCompositionToken __ PromiseCompositionExpression)*
+  = head:DotWrapCompositionExpression
+    tail:(__ DotCompositionToken __ DotWrapCompositionExpression)*
     {
         return !tail.length ? head : buildDotCompositionExpression(head, buildDotCall(extractPairs(tail, 1, 3), location())); 
+    }
+
+DotWrapCompositionExpression
+  = head:PromiseCompositionExpression
+    tail:(__ DotWrapCompositionToken __ PromiseCompositionExpression)*
+    {
+        return !tail.length ? head : buildDotCompositionExpression(head, buildDotWrapCall(extractPairs(tail, 1, 3), location()));
     }
 
 PromiseCompositionExpression
@@ -361,14 +392,14 @@ MonadCompositionExpression
   = head:FunctionCompositionExpression
     tail:(__ MonadCompositionToken __ FunctionCompositionExpression)*
     { 
-        return !tail.length ? head : buildCompositionExpression(head, extractList(tail, 3), "composeK"); 
+        return !tail.length ? head : buildCompositionExpression(head, extractList(tail, 3), "composeK");
     }
 
 FunctionCompositionExpression
   = head:LogicalORExpression
-    tail:(" . " LogicalORExpression)*
-    { 
-        return !tail.length ? head : buildCompositionExpression(head, extractList(tail, 1), "compose");
+    tail:(__ FunctionCompositionToken __ LogicalORExpression)*
+    {
+        return !tail.length ? head : buildCompositionExpression(head, extractList(tail, 3), "compose");
     }
 
 LogicalORExpression
@@ -1019,7 +1050,7 @@ TrueToken       = "true"       !IdentifierPart
 
 EllipsisToken   = "..."
 ArrowToken      = "->"
-JoinToken       = ">>"
+JoinToken       = $(">>" !">")
 BindToken       = ">>="
 ConcatToken     = "++"
 ApplyToken      = "<*>"
@@ -1027,20 +1058,20 @@ AltToken        = "<|>"
 ThenToken       = ">>>"
 CatchToken      = "!>>"
 
-FunctionCompositionToken = " . "
+FunctionCompositionToken = $(![0-9] "." ![0-9])
 MonadCompositionToken    = "<=<"
 PromiseCompositionToken  = "<<>"
+
+DotWrapCompositionToken
+    = JoinToken { return "chain" }
+    / ApplyToken { return "ap" }
+    / AltToken { return "alt" }
 
 DotCompositionToken
     = ConcatToken { return "concat" }
     / BindToken { return "chain" }
-    / JoinToken { return "join" }
-    / ApplyToken { return "ap" }
-    / AltToken { return "alt" }
     / ThenToken { return "then" }
     / CatchToken { return "catch" }
-
-
 
 
 //////////////////////////////////////////////
